@@ -28,7 +28,7 @@ type BookmarkCard = {
   title: string;
   url: string;
 };
-export const BookmarkCard: FC<BookmarkCard> = ({ tags, title, url }) => {
+const BookmarkCard: FC<BookmarkCard> = ({ tags, title, url }) => {
   const classes = { ...useSharedStyles(), ...useStyles() };
   return (
     <Card className={`${classes.hoverable} ${classes.root}`}>
@@ -45,3 +45,5 @@ export const BookmarkCard: FC<BookmarkCard> = ({ tags, title, url }) => {
     </Card>
   );
 };
+
+export default BookmarkCard;

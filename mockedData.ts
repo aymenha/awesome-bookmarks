@@ -11,7 +11,7 @@ const generateTags = () =>
   new Array(
     random.number({
       min: 1,
-      max: 5
+      max: 3
     })
   )
     .fill(true)

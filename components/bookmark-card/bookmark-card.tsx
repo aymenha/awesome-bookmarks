@@ -14,7 +14,7 @@ import Url from "./url";
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 500,
+    maxWidth: 600,
     border: "2px solid transparent",
     "&:hover": {
       border: "2px solid #6aaee8"
@@ -36,10 +36,12 @@ const BookmarkCard: FC<BookmarkCard> = ({ tags, title, url }) => {
   const classes = { ...useSharedStyles(), ...useStyles() };
   return (
     <Card className={`${classes.hoverable} ${classes.root}`}>
-      <ButtonBase className={classes.content} component={CardContent}>
-        <Tags tags={tags} />
-        <Title>{title}</Title>
-        <Url>{url}</Url>
+      <ButtonBase className={classes.content}>
+        <CardContent>
+          <Tags tags={tags} />
+          <Title>{title}</Title>
+          <Url>{url}</Url>
+        </CardContent>
       </ButtonBase>
       <Divider></Divider>
       <CardActions>

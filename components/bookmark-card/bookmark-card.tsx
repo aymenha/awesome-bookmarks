@@ -14,7 +14,11 @@ import Url from "./url";
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 500
+    maxWidth: 500,
+    border: "2px solid transparent",
+    "&:hover": {
+      border: "2px solid #6aaee8"
+    }
   },
   content: {
     textAlign: "initial",

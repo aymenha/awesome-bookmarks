@@ -16,5 +16,8 @@ export default makeStyles({
       boxShadow:
         "rgba(45,45,45,0.05) 0px 2px 2px, rgba(49,49,49,0.05) 0px 4px 4px, rgba(42,42,42,0.05) 0px 8px 8px, rgba(32,32,32,0.05) 0px 16px 16px, rgba(49,49,49,0.05) 0px 32px 32px, rgba(35,35,35,0.05) 0px 64px 64px"
     }
+  },
+  boundary: {
+    border: "1px solid red"
   }
 });

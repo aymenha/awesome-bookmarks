@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "storybook": "start-storybook -p 6006 --ci",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "docker": "docker-compose up"
   },
   "dependencies": {
     "@material-ui/core": "^4.8.3",

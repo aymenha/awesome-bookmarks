@@ -31,14 +31,15 @@ type BookmarkCard = {
   tags: Tags["tags"];
   title: string;
   url: string;
+  onClick: () => void;
 };
-const BookmarkCard: FC<BookmarkCard> = ({ tags, title, url }) => {
+const BookmarkCard: FC<BookmarkCard> = ({ tags, title, url, onClick }) => {
   const classes = { ...useSharedStyles(), ...useStyles() };
   return (
-    <Card className={`${classes.hoverable} ${classes.root}`}>
+    <Card className={`${classes.hoverable} ${classes.root}`} onClick={onClick}>
       <ButtonBase className={classes.content}>
         <CardContent>
-          <Tags tags={tags} />
+          {tags && <Tags tags={tags} />}
           <Title>{title}</Title>
           <Url>{url}</Url>
         </CardContent>

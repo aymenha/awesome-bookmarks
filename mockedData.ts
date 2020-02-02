@@ -24,3 +24,9 @@ export const bookmarks = itemsArray.map(_ => {
     tags: generateTags()
   };
 });
+
+export const generateBookmark = () => ({
+  title: name.title(),
+  url: internet.url(),
+  tags: generateTags()
+});

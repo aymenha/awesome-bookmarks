@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useState, useEffect, useCallback, FC } from "react";
 import Container from "@material-ui/core/Container";
 import Grid, { GridSpacing } from "@material-ui/core/Grid";
 import BookmarkCard from "../components/bookmark-card/bookmark-card";
@@ -6,6 +6,7 @@ import ControlPanel from "../components/control-panel/control-panel";
 import BookmarkForm from "../components/bookmark-form/bookmark-form";
 
 type Bookmark = {
+  id: string;
   title: string;
   url: string;
   tags: string[];
@@ -23,13 +24,14 @@ const getAllBookmarks = async (db: PouchDB.Database): Promise<Bookmark[]> => {
 
   if (data.docs.length === 0) return [];
   return data.docs.map(doc => {
-    const { title, url, tags } = doc!;
-    return { title, url, tags };
+    const { title, url, tags, _id } = doc!;
+    return { title, url, tags, id: _id };
   });
 };
 
 const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
   const [cards, setCards] = useState<Bookmark[]>([]);
+  const [selectedId, setselectedId] = useState<string>("");
 
   useEffect(() => {
     let changesRef: PouchDB.Core.Changes<any>;
@@ -50,6 +52,28 @@ const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
     return () => changesRef.cancel();
   }, []);
 
+  // const onClick = useCallback(() => {
+  //   console.log(`${e.target.dataset.id}`);
+  // }, []);
+
+  const onClick = (e: any) => {
+    console.log(e.currentTarget);
+  };
+
+  const Cards = cards.map(b => {
+    return (
+      <Grid item key={b.id} sm={true}>
+        <BookmarkCard
+          tags={b.tags}
+          title={b.title}
+          url={b.url}
+          onClick={onClick}
+          data-id={b.id}
+        ></BookmarkCard>
+      </Grid>
+    );
+  });
+
   return (
     <Container fixed>
       <br />
@@ -62,18 +86,7 @@ const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
         <ControlPanel />
       </Grid> */}
         <Grid container item spacing={3} sm>
-          {cards.map((b, index) => (
-            <Grid item key={index} sm={true}>
-              <BookmarkCard
-                tags={b.tags}
-                title={b.title}
-                url={b.url}
-                onClick={async () => {
-                  console.log(`${b.title}`);
-                }}
-              ></BookmarkCard>
-            </Grid>
-          ))}
+          {Cards}
         </Grid>
       </Grid>
     </Container>

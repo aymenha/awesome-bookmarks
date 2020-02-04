@@ -4,29 +4,8 @@ import Grid, { GridSpacing } from "@material-ui/core/Grid";
 import BookmarkCard from "../components/bookmark-card/bookmark-card";
 import ControlPanel from "../components/control-panel/control-panel";
 import BookmarkForm from "../components/bookmark-form/bookmark-form";
-
-type Bookmark = {
-  title: string;
-  url: string;
-  tags: string[];
-};
-const getAllBookmarks = async (db: PouchDB.Database): Promise<Bookmark[]> => {
-  await db.createIndex({
-    index: {
-      fields: ["createdAt"]
-    }
-  });
-  const data = (await db.find({
-    selector: {},
-    sort: [{ createdAt: "desc" }]
-  })) as PouchDB.Find.FindResponse<Bookmark>;
-
-  if (data.docs.length === 0) return [];
-  return data.docs.map(doc => {
-    const { title, url, tags } = doc!;
-    return { title, url, tags };
-  });
-};
+import { Bookmark, getAllBookmarks } from "../api/bookmark";
+import { subscribeToChanges } from "../db";
 
 const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
   const [cards, setCards] = useState<Bookmark[]>([]);
@@ -34,21 +13,16 @@ const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
   useEffect(() => {
     let changesRef: PouchDB.Core.Changes<any>;
     (async () => {
-      const bookmarks = await getAllBookmarks(db);
-      console.log(bookmarks);
-      setCards(bookmarks);
-      changesRef = db.changes({
-        live: true,
-        include_docs: false,
-        since: "now"
-      });
-      changesRef.on("change", async _ => {
-        const bookmarks = await getAllBookmarks(db);
-        setCards(bookmarks);
-      });
+      await fetchBookmarks();
+      changesRef = subscribeToChanges(db, async () => await fetchBookmarks());
     })();
     return () => changesRef.cancel();
   }, []);
+
+  const fetchBookmarks = async () => {
+    const bookmarks = await getAllBookmarks(db);
+    setCards(bookmarks);
+  };
 
   return (
     <Container fixed>

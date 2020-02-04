@@ -28,3 +28,15 @@ export const resetDb = async () => {
   const docs = await _db.allDocs({ include_docs: true });
   docs.rows.filter(row => row.doc).map(row => _db!.remove(row.doc!));
 };
+
+export const subscribeToChanges = (
+  db: PouchDB.Database,
+  cbk: (value: PouchDB.Core.ChangesResponseChange<{}>) => any
+): PouchDB.Core.Changes<any> => {
+  const changesRef = db.changes({
+    live: true,
+    include_docs: false,
+    since: "now"
+  });
+  return changesRef.on("change", cbk);
+};

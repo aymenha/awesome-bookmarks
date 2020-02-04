@@ -24,6 +24,9 @@ const useStyles = makeStyles({
     textAlign: "initial",
     width: "100%",
     display: "block"
+  },
+  leftAlign: {
+    marginLeft: "auto !important"
   }
 });
 
@@ -39,7 +42,6 @@ const BookmarkCard: FC<BookmarkCard> = ({ tags, title, url, onClick }) => {
     <Card className={`${classes.hoverable} ${classes.root}`} onClick={onClick}>
       <ButtonBase className={classes.content}>
         <CardContent>
-          {tags && <Tags tags={tags} />}
           <Title>{title}</Title>
           <Url>{url}</Url>
         </CardContent>
@@ -47,6 +49,7 @@ const BookmarkCard: FC<BookmarkCard> = ({ tags, title, url, onClick }) => {
       <Divider></Divider>
       <CardActions>
         <SourceIcon />
+        {tags && <Tags tags={tags} />}
         <ShareButton />
       </CardActions>
     </Card>

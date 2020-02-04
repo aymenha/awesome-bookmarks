@@ -11,17 +11,21 @@ const useStyles = makeStyles({
     marginBottom: 5,
     "&:not(:last-of-type)": {
       marginRight: 5
+    },
+    "&:hover": {
+      borderColor: "#6aaee8"
     }
   }
 });
 
 type Tags = {
   tags: string[];
+  className?: string;
 };
-const Tags: FC<Tags> = ({ tags }) => {
+const Tags: FC<Tags> = ({ tags, className }) => {
   const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <div className={`${classes.root} ${className ? className : ""}`}>
       {tags.map((tag, index) => (
         <Tag key={index} label={tag} className={classes.tag} />
       ))}

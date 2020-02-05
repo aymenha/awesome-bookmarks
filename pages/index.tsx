@@ -1,14 +1,18 @@
 import React, { useState, useEffect, FC } from "react";
 import Container from "@material-ui/core/Container";
+import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import Box from "@material-ui/core/Box";
 import Grid, { GridSpacing } from "@material-ui/core/Grid";
 import BookmarkCard from "../components/bookmark-card/bookmark-card";
 import ControlPanel from "../components/control-panel/control-panel";
 import BookmarkForm from "../components/bookmark-form/bookmark-form";
-import { Bookmark, getAllBookmarks } from "../api/bookmark";
+import { Bookmark, getAllBookmarks, getByTag } from "../api/bookmark";
 import { subscribeToChanges } from "../db";
 
 const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
   const [cards, setCards] = useState<Bookmark[]>([]);
+  const [isFiltered, setIsFiltered] = useState(false);
 
   useEffect(() => {
     let changesRef: PouchDB.Core.Changes<any>;
@@ -21,16 +25,34 @@ const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
 
   const fetchBookmarks = async () => {
     const bookmarks = await getAllBookmarks(db);
+    setIsFiltered(false);
     setCards(bookmarks);
+  };
+
+  const fetchBookmarksByTag = async (tag: string) => {
+    const bookmarks = await getByTag(db, tag);
+    setCards(bookmarks);
+    setIsFiltered(true);
   };
 
   return (
     <Container fixed>
-      <br />
-      <br />
-      <BookmarkForm db={db}></BookmarkForm>
-      <br />
-      <br />
+      <Box my={3}></Box>
+
+      {isFiltered && (
+        <Box display="inline" mr={2}>
+          <ButtonGroup color="secondary" variant="outlined">
+            <Button onClick={fetchBookmarks}>clear filter</Button>
+          </ButtonGroup>
+        </Box>
+      )}
+
+      <Box display="inline">
+        <BookmarkForm db={db}></BookmarkForm>
+      </Box>
+
+      <Box my={3}></Box>
+
       <Grid container direction="row" spacing={3}>
         {/* <Grid container item sm={2}>
         <ControlPanel />
@@ -42,9 +64,7 @@ const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
                 tags={b.tags}
                 title={b.title}
                 url={b.url}
-                onClick={async () => {
-                  console.log(`${b.title}`);
-                }}
+                onTagClick={fetchBookmarksByTag}
               ></BookmarkCard>
             </Grid>
           ))}

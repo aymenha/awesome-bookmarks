@@ -5,8 +5,9 @@ import useStyles from "../../styles";
 type Tag = {
   label: string;
   className: string;
+  onClick?: (tag: string) => void;
 };
-const Tag: FC<Tag> = ({ label, className }) => {
+const Tag: FC<Tag> = ({ label, className, onClick }) => {
   const classes = useStyles();
   return (
     <Chip
@@ -14,6 +15,7 @@ const Tag: FC<Tag> = ({ label, className }) => {
       label={label}
       variant="outlined"
       size="small"
+      onClick={() => (onClick ? onClick(label) : null)}
     />
   );
 };

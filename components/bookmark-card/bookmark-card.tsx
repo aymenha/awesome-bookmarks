@@ -34,9 +34,16 @@ type BookmarkCard = {
   tags: Tags["tags"];
   title: string;
   url: string;
-  onClick: () => void;
+  onClick?: () => void;
+  onTagClick?: (tag: string) => void;
 };
-const BookmarkCard: FC<BookmarkCard> = ({ tags, title, url, onClick }) => {
+const BookmarkCard: FC<BookmarkCard> = ({
+  tags,
+  title,
+  url,
+  onClick,
+  onTagClick
+}) => {
   const classes = { ...useSharedStyles(), ...useStyles() };
   return (
     <Card className={`${classes.hoverable} ${classes.root}`} onClick={onClick}>
@@ -49,7 +56,7 @@ const BookmarkCard: FC<BookmarkCard> = ({ tags, title, url, onClick }) => {
       <Divider></Divider>
       <CardActions>
         <SourceIcon />
-        {tags && <Tags tags={tags} />}
+        {tags && <Tags tags={tags} onClick={onTagClick} />}
         <ShareButton />
       </CardActions>
     </Card>

@@ -1,5 +1,4 @@
 import { Fragment, useState } from "react";
-import PouchDB from "pouchdb";
 import { v4 } from "uuid";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";

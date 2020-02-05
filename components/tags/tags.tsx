@@ -21,13 +21,19 @@ const useStyles = makeStyles({
 type Tags = {
   tags: string[];
   className?: string;
+  onClick?: (tag: string) => void;
 };
-const Tags: FC<Tags> = ({ tags, className }) => {
+const Tags: FC<Tags> = ({ tags, className, onClick }) => {
   const classes = useStyles();
   return (
     <div className={`${classes.root} ${className ? className : ""}`}>
       {tags.map((tag, index) => (
-        <Tag key={index} label={tag} className={classes.tag} />
+        <Tag
+          key={index}
+          label={tag}
+          className={classes.tag}
+          onClick={onClick}
+        />
       ))}
     </div>
   );

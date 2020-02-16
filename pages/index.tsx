@@ -6,13 +6,19 @@ import Box from "@material-ui/core/Box";
 import Grid, { GridSpacing } from "@material-ui/core/Grid";
 import BookmarkCard from "../components/bookmark-card/bookmark-card";
 import ControlPanel from "../containers/control-panel/control-panel";
-import BookmarkForm from "../components/bookmark-form/bookmark-form";
-import { Bookmark, getAllBookmarks, getByTag } from "../api/bookmark";
+import {
+  Bookmark,
+  getAllBookmarks,
+  getByTag,
+  getByTitle
+} from "../api/bookmark";
 import { subscribeToChanges } from "../db";
+import SearchBar from "../components/search-bar.tsx/search-bar";
 
 const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
   const [cards, setCards] = useState<Bookmark[]>([]);
   const [isFiltered, setIsFiltered] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     let changesRef: PouchDB.Core.Changes<any>;
@@ -24,6 +30,7 @@ const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
   }, []);
 
   const fetchBookmarks = async () => {
+    setSearchQuery("");
     const bookmarks = await getAllBookmarks(db);
     setIsFiltered(false);
     setCards(bookmarks);
@@ -35,43 +42,52 @@ const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
     setIsFiltered(true);
   };
 
+  const fetchBookmarksByTitle = async (query: string) => {
+    setSearchQuery(query);
+    if (query === "") return fetchBookmarks();
+    const bookmarks = await getByTitle(db, query);
+    setCards(bookmarks);
+    setIsFiltered(true);
+  };
+
   return (
     <Container fixed>
-      <Box my={3}></Box>
+      <Box my={3}>
+        <SearchBar
+          onSearch={fetchBookmarksByTitle}
+          query={searchQuery}
+        ></SearchBar>
+      </Box>
+      <Box my={3}>
+        <ControlPanel db={db} />
+        {isFiltered && (
+          <Box display="inline" ml={1}>
+            <ButtonGroup color="secondary" variant="outlined">
+              <Button onClick={fetchBookmarks}>clear filter</Button>
+            </ButtonGroup>
+          </Box>
+        )}
+      </Box>
 
-      <ControlPanel db={db} />
-
-      {isFiltered && (
-        <Box display="inline" mr={2}>
-          <ButtonGroup color="secondary" variant="outlined">
-            <Button onClick={fetchBookmarks}>clear filter</Button>
-          </ButtonGroup>
-        </Box>
-      )}
-
-      {/* <Box display="inline">
-        <BookmarkForm db={db}></BookmarkForm>
-      </Box> */}
-
-      <Box my={3}></Box>
-
-      <Grid container direction="row" spacing={3}>
-        {/* <Grid container item sm={2}>
+      <Box my={3}>
+        <Grid container direction="row" spacing={3}>
+          {/* <Grid container item sm={2}>
         <ControlPanel />
       </Grid> */}
-        <Grid container item spacing={3} sm>
-          {cards.map((b, index) => (
-            <Grid item key={index} sm={true}>
-              <BookmarkCard
-                tags={b.tags}
-                title={b.title}
-                url={b.url}
-                onTagClick={fetchBookmarksByTag}
-              ></BookmarkCard>
-            </Grid>
-          ))}
+          <Grid container item spacing={3} sm>
+            {cards.map((b, index) => (
+              <Grid item key={index} sm={true}>
+                <BookmarkCard
+                  tags={b.tags}
+                  title={b.title}
+                  url={b.url}
+                  onTagClick={fetchBookmarksByTag}
+                ></BookmarkCard>
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
-      </Grid>
+      </Box>
     </Container>
   );
 };

@@ -48,3 +48,28 @@ export const getByTag = async (
     return { title, url, tags, id: _id };
   });
 };
+
+export const getByTitle = async (
+  db: PouchDB.Database,
+  query: string
+): Promise<Bookmark[]> => {
+  await db.createIndex({
+    index: {
+      fields: ["title", "createdAt"]
+    }
+  });
+  var regexp = new RegExp(query, "i");
+  const data = (await db.find({
+    selector: {
+      title: { $regex: regexp },
+      createdAt: {}
+    },
+    sort: [{ createdAt: "desc" }]
+  })) as PouchDB.Find.FindResponse<Bookmark>;
+
+  if (data.docs.length === 0) return [];
+  return data.docs.map<Bookmark>(doc => {
+    const { title, url, tags, _id } = doc!;
+    return { title, url, tags, id: _id };
+  });
+};

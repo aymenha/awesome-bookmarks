@@ -1,42 +1,50 @@
-import { Fragment, useState } from "react";
-import { v4 } from "uuid";
+import { Fragment, useState, FC, useEffect } from "react";
 import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import { generateBookmark } from "../../mockedData";
-import { resetDb } from "../../db";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
-const createBookmark = async (db: PouchDB.Database, bookmark) => {
-  await db.put(
-    { ...bookmark, _id: v4(), createdAt: new Date().toISOString() },
-    {}
-  );
-};
+import Form from "./form";
 
-const clearDb = async () => {
-  await resetDb();
-};
+export interface Bookmark {
+  title: string;
+  url: string;
+  tags?: string[];
+}
 
-const BookmarkForm = ({ db }) => {
-  const [bookmark, setBookmark] = useState(generateBookmark());
+interface Props {
+  data: Bookmark;
+  isOpen?: boolean;
+  onAdd?: (data: Bookmark) => void;
+  onCancel?: () => void;
+}
+const BookmarkForm: FC<Props> = ({ data, isOpen = true, onAdd, onCancel }) => {
+  const [bookmark, setBookmark] = useState(data);
+
+  useEffect(() => {
+    setBookmark(data);
+  }, [data]);
+
   return (
     <Fragment>
-      <ButtonGroup color="primary" aria-label="contained primary button group">
-        <Button onClick={() => setBookmark(generateBookmark())}>refresh</Button>
-        <Button
-          onClick={async () => {
-            await createBookmark(db, bookmark);
-            setBookmark(generateBookmark());
-          }}
-        >
-          create bookmark
-        </Button>
-        <Button color="secondary" onClick={() => clearDb()}>
-          delete DB
-        </Button>
-      </ButtonGroup>
-      <div>
-        <pre>{JSON.stringify(bookmark, null, 2)}</pre>
-      </div>
+      <Dialog open={isOpen} onClose={() => {}}>
+        <DialogTitle>Add Bookmark</DialogTitle>
+        <DialogContent>
+          <Form
+            data={bookmark}
+            onChange={data => setBookmark({ ...bookmark, ...data })}
+          ></Form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => onAdd && onAdd(bookmark)} color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Fragment>
   );
 };

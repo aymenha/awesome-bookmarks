@@ -5,7 +5,7 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Box from "@material-ui/core/Box";
 import Grid, { GridSpacing } from "@material-ui/core/Grid";
 import BookmarkCard from "../components/bookmark-card/bookmark-card";
-import ControlPanel from "../components/control-panel/control-panel";
+import ControlPanel from "../containers/control-panel/control-panel";
 import BookmarkForm from "../components/bookmark-form/bookmark-form";
 import { Bookmark, getAllBookmarks, getByTag } from "../api/bookmark";
 import { subscribeToChanges } from "../db";
@@ -39,6 +39,8 @@ const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
     <Container fixed>
       <Box my={3}></Box>
 
+      <ControlPanel db={db} />
+
       {isFiltered && (
         <Box display="inline" mr={2}>
           <ButtonGroup color="secondary" variant="outlined">
@@ -47,9 +49,9 @@ const Home: FC<{ db: PouchDB.Database }> = ({ db }) => {
         </Box>
       )}
 
-      <Box display="inline">
+      {/* <Box display="inline">
         <BookmarkForm db={db}></BookmarkForm>
-      </Box>
+      </Box> */}
 
       <Box my={3}></Box>
 

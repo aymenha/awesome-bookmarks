@@ -3,7 +3,7 @@
 > This project was bootstrapped with [
 > nextjs-boilerplate](https://github.com/aymenha/nextjs-boilerplate).
 
-A need for a way to de-clutter my already fully crammed bookmarks bar arised at the office, mainly due to the sheer amount of links being shared every single day in our #developers Slack channel.
+A need for a way to de-clutter my already fully crammed bookmarks bar arose at the office, mainly due to the sheer amount of links being shared every single day in our #developers Slack channel.
 
 I used to save most in Toby Extension but there were an incident where i lost all of my bookmarks data, and thankfully i had them saved in Chrome in case something like this happened.
 Cool 🙂️. The only issue is Chrome bookmarks are limited in terms of functionalities. Apart from plain title/url search there wasn't much to it.
